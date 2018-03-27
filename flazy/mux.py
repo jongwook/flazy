@@ -7,6 +7,7 @@ from .utils import close_iterator
 
 class Mux(Dataset):
     def __init__(self, datasets: List[Dataset]):
+        super().__init__()
         self.datasets = datasets
 
     def _upstream(self) -> List[Dataset]:
