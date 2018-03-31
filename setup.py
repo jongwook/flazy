@@ -24,7 +24,7 @@ setup(
     ],
     keywords='dataset functional lazy',
     packages=find_packages(),
-    install_requires=['tqdm', 'numpy', 'pandas', 'multiprocess'],
+    install_requires=['tqdm', 'numpy', 'pandas', 'multiprocess', 'tfrecord_lite'],
     extras_require={
         'dev': ['check-manifest'],
         'test': ['pytest', 'tensorflow==1.6.0'],
