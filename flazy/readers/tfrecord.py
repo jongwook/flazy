@@ -7,6 +7,8 @@ from tensorflow.python import pywrap_tensorflow
 from tensorflow.python.framework import errors
 from tensorflow.python.util import compat
 
+from tfrecord_lite import decode_example
+
 from .. import Dataset
 from ..utils import close_iterator
 
@@ -43,18 +45,6 @@ def tf_record_iterator(path, options=None):
         reader.Close()
 
 
-# TODO: faster protobuf->numpy conversion
-def parse_feature(feature: tf.train.Feature):
-    kind = feature.WhichOneof('kind')
-    if kind == 'float_list':
-        return np.array(feature.float_list.value, dtype=np.float32)
-    if kind == 'bytes_list':
-        return list(feature.bytes_list.value)
-    if kind == 'int64_list':
-        return np.array(feature.int64_list.value, dtype=np.int64)
-    raise ValueError('unsupported feature type: {}'.format(kind))
-
-
 def read_records(path: str, keys: List[str], options: tf.python_io.TFRecordOptions):
     if os.path.isdir(path):
         files = [os.path.join(path, file) for file in os.listdir(path) if file.endswith('.tfrecord')]
@@ -67,12 +57,7 @@ def read_records(path: str, keys: List[str], options: tf.python_io.TFRecordOptio
         iterator = tf_record_iterator(file, options)
         try:
             for record in iterator:
-                example = tf.train.Example()
-                example.ParseFromString(record)
-                feature_map = example.features.feature
-                if keys is None:
-                    keys = list(feature_map.keys())
-                yield {key: parse_feature(feature_map[key]) for key in keys}
+                yield decode_example(record, keys or [])
         finally:
             close_iterator(iterator)
 
