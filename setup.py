@@ -27,7 +27,7 @@ setup(
     install_requires=['tqdm', 'numpy', 'pandas', 'multiprocess', 'tfrecord_lite'],
     extras_require={
         'dev': ['check-manifest'],
-        'test': ['pytest', 'tensorflow==1.6.0'],
+        'test': ['pytest', 'tensorflow==1.8.0'],
     },
     project_urls={
         'Bug Reports': 'https://github.com/jongwook/flazy/issues',
